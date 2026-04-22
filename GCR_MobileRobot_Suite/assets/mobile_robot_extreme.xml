@@ -1,0 +1,98 @@
+<mujoco model="mobile_robot_extreme">
+    <compiler angle="degree" coordinate="local" inertiafromgeom="true" autolimits="true"/>
+    <option integrator="RK4" timestep="0.002" iterations="100" solver="Newton" gravity="0 0 -9.81"/>
+
+    <asset>
+        <texture name="texplane" type="2d" builtin="checker" rgb1=".2 .3 .4" rgb2=".1 .15 .2" width="512" height="512" mark="cross" markrgb=".8 .8 .8"/>
+        <material name="matplane" reflectance="0.3" texture="texplane" texrepeat="1 1" texuniform="true"/>
+        <texture name="texbrick" type="2d" builtin="checker" rgb1=".6 .3 .3" rgb2=".4 .2 .2" width="256" height="256"/>
+        <material name="matbrick" texture="texbrick"/>
+        <texture name="texwood" type="2d" builtin="checker" rgb1=".4 .3 .2" rgb2=".2 .15 .1" width="256" height="256"/>
+        <material name="matwood" texture="texwood"/>
+    </asset>
+
+    <worldbody>
+        <light directional="true" cutoff="100" exponent="1" diffuse=".8 .8 .8" specular=".1 .1 .1" pos="0 0 10" dir="0 0 -1"/>
+        <geom name="floor" pos="0 0 0" size="5 5 .1" type="plane" material="matplane" condim="3"/>
+
+        <!-- Boundary Walls -->
+        <geom name="wall_n" pos="0 5 0.5" size="5 0.1 0.5" type="box" material="matwood"/>
+        <geom name="wall_s" pos="0 -5 0.5" size="5 0.1 0.5" type="box" material="matwood"/>
+        <geom name="wall_e" pos="5 0 0.5" size="0.1 5 0.5" type="box" material="matwood"/>
+        <geom name="wall_w" pos="-5 0 0.5" size="0.1 5 0.5" type="box" material="matwood"/>
+
+        <!-- MAZE WALLS (Zig-Zag Gauntlet) -->
+        <!-- Wall 1: Left Barrier (Gap at the Top) -->
+        <geom name="maze_1" pos="-2.5 -1.5 0.5" size="0.15 3.5 0.5" type="box" material="matbrick"/>
+        
+        <!-- Wall 2: Center Barrier (Gap at the Bottom) -->
+        <geom name="maze_2" pos="0 1.5 0.5" size="0.15 3.5 0.5" type="box" material="matbrick"/>
+        
+        <!-- Wall 3: Right Barrier (Gap at the Top) -->
+        <geom name="maze_3" pos="2.5 -1.5 0.5" size="0.15 3.5 0.5" type="box" material="matbrick"/>
+
+        <!-- Randomized Boxes -->
+        <body name="box0" pos="-3.5 2.5 0.3"><joint type="free"/><geom size="0.2 0.2 0.2" type="box" material="matwood" mass="100" friction="0.1"/></body>
+        <body name="box1" pos="-1.0 -2.5 0.3"><joint type="free"/><geom size="0.2 0.2 0.2" type="box" material="matwood" mass="100" friction="0.1"/></body>
+        <body name="box2" pos="1.0 2.5 0.3"><joint type="free"/><geom size="0.2 0.2 0.2" type="box" material="matwood" mass="100" friction="0.1"/></body>
+        <body name="box3" pos="3.5 -2.5 0.3"><joint type="free"/><geom size="0.2 0.2 0.2" type="box" material="matwood" mass="100" friction="0.1"/></body>
+        <body name="box4" pos="-4.0 -4.0 0.3"><joint type="free"/><geom size="0.2 0.2 0.2" type="box" material="matwood" mass="100" friction="0.1"/></body>
+        <body name="box5" pos="4.0 4.0 0.3"><joint type="free"/><geom size="0.2 0.2 0.2" type="box" material="matwood" mass="100" friction="0.1"/></body>
+        <body name="box6" pos="0 0 0.3"><joint type="free"/><geom size="0.2 0.2 0.2" type="box" material="matwood" mass="100" friction="0.1"/></body>
+        <body name="box7" pos="2 2 0.3"><joint type="free"/><geom size="0.2 0.2 0.2" type="box" material="matwood" mass="100" friction="0.1"/></body>
+
+        <!-- Mobile Robot (Start at the Far Left) -->
+        <body name="robot" pos="-4 0 0.1">
+            <freejoint name="root"/>
+            <geom name="chassis" pos="0 0 0.02" size="0.2 0.15 0.08" type="box" rgba="0.1 0.1 0.1 1" mass="5"/>
+            <body name="wfl" pos="0.12 0.17 0"><joint name="dfl" damping="0.1" axis="0 1 0"/><geom size="0.08 0.02" type="cylinder" euler="90 0 0" rgba="0.3 0.3 0.3 1" friction="1 0.005 0.0001"/></body>
+            <body name="wrl" pos="-0.12 0.17 0"><joint name="drl" damping="0.1" axis="0 1 0"/><geom size="0.08 0.02" type="cylinder" euler="90 0 0" rgba="0.3 0.3 0.3 1" friction="1 0.005 0.0001"/></body>
+            <body name="wfr" pos="0.12 -0.17 0"><joint name="dfr" damping="0.1" axis="0 1 0"/><geom size="0.08 0.02" type="cylinder" euler="90 0 0" rgba="0.3 0.3 0.3 1" friction="1 0.005 0.0001"/></body>
+            <body name="wrr" pos="-0.12 -0.17 0"><joint name="drr" damping="0.1" axis="0 1 0"/><geom size="0.08 0.02" type="cylinder" euler="90 0 0" rgba="0.3 0.3 0.3 1" friction="1 0.005 0.0001"/></body>
+
+            <!-- LiDAR Sites -->
+            <site name="s0" pos="0.25 0 0.15" zaxis="0 -1 0" group="1"/><site name="s1" pos="0.25 0 0.15" zaxis="0.156 -0.988 0" group="1"/><site name="s2" pos="0.25 0 0.15" zaxis="0.309 -0.951 0" group="1"/>
+            <site name="s3" pos="0.25 0 0.15" zaxis="0.454 -0.891 0" group="1"/><site name="s4" pos="0.25 0 0.15" zaxis="0.588 -0.809 0" group="1"/><site name="s5" pos="0.25 0 0.15" zaxis="0.707 -0.707 0" group="1"/>
+            <site name="s6" pos="0.25 0 0.15" zaxis="0.809 -0.588 0" group="1"/><site name="s7" pos="0.25 0 0.15" zaxis="0.891 -0.454 0" group="1"/><site name="s8" pos="0.25 0 0.15" zaxis="0.951 -0.309 0" group="1"/>
+            <site name="s9" pos="0.25 0 0.15" zaxis="0.988 -1.156 0" group="1"/><site name="s10" pos="0.25 0 0.15" zaxis="1 0 0" group="1"/><site name="s11" pos="0.25 0 0.15" zaxis="0.988 1.156 0" group="1"/>
+            <site name="s12" pos="0.25 0 0.15" zaxis="0.951 0.309 0" group="1"/><site name="s13" pos="0.25 0 0.15" zaxis="0.891 0.454 0" group="1"/><site name="s14" pos="0.25 0 0.15" zaxis="0.809 0.588 0" group="1"/>
+            <site name="s15" pos="0.25 0 0.15" zaxis="0.707 0.707 0" group="1"/><site name="s16" pos="0.25 0 0.15" zaxis="0.588 0.809 0" group="1"/><site name="s17" pos="0.25 0 0.15" zaxis="0.454 0.891 0" group="1"/>
+            <site name="s18" pos="0.25 0 0.15" zaxis="0.309 0.951 0" group="1"/><site name="s19" pos="0.25 0 0.15" zaxis="0.156 0.988 0" group="1"/>
+        </body>
+        
+        <!-- Goal (At the Far Right) -->
+        <body name="goal" pos="4 0 0.1"><site name="goal_s" size="0.2" type="sphere" rgba="0 1 0 0.5"/></body>
+        
+        <!-- LiDAR Beams -->
+        <body name="lidar_beam_0" mocap="true"><site name="hit_0" size="0.005" rgba="0 1 0 0" group="1"/></body><body name="lidar_beam_1" mocap="true"><site name="hit_1" size="0.005" rgba="0 1 0 0" group="1"/></body><body name="lidar_beam_2" mocap="true"><site name="hit_2" size="0.005" rgba="0 1 0 0" group="1"/></body><body name="lidar_beam_3" mocap="true"><site name="hit_3" size="0.005" rgba="0 1 0 0" group="1"/></body>
+        <body name="lidar_beam_4" mocap="true"><site name="hit_4" size="0.005" rgba="0 1 0 0" group="1"/></body><body name="lidar_beam_5" mocap="true"><site name="hit_5" size="0.005" rgba="0 1 0 0" group="1"/></body><body name="lidar_beam_6" mocap="true"><site name="hit_6" size="0.005" rgba="0 1 0 0" group="1"/></body><body name="lidar_beam_7" mocap="true"><site name="hit_7" size="0.005" rgba="0 1 0 0" group="1"/></body>
+        <body name="lidar_beam_8" mocap="true"><site name="hit_8" size="0.005" rgba="0 1 0 0" group="1"/></body><body name="lidar_beam_9" mocap="true"><site name="hit_9" size="0.005" rgba="0 1 0 0" group="1"/></body><body name="lidar_beam_10" mocap="true"><site name="hit_10" size="0.005" rgba="0 1 0 0" group="1"/></body><body name="lidar_beam_11" mocap="true"><site name="hit_11" size="0.005" rgba="0 1 0 0" group="1"/></body>
+        <body name="lidar_beam_12" mocap="true"><site name="hit_12" size="0.005" rgba="0 1 0 0" group="1"/></body><body name="lidar_beam_13" mocap="true"><site name="hit_13" size="0.005" rgba="0 1 0 0" group="1"/></body><body name="lidar_beam_14" mocap="true"><site name="hit_14" size="0.005" rgba="0 1 0 0" group="1"/></body><body name="lidar_beam_15" mocap="true"><site name="hit_15" size="0.005" rgba="0 1 0 0" group="1"/></body>
+        <body name="lidar_beam_16" mocap="true"><site name="hit_16" size="0.005" rgba="0 1 0 0" group="1"/></body><body name="lidar_beam_17" mocap="true"><site name="hit_17" size="0.005" rgba="0 1 0 0" group="1"/></body><body name="lidar_beam_18" mocap="true"><site name="hit_18" size="0.005" rgba="0 1 0 0" group="1"/></body><body name="lidar_beam_19" mocap="true"><site name="hit_19" size="0.005" rgba="0 1 0 0" group="1"/></body>
+    </worldbody>
+
+    <tendon>
+        <spatial name="beam0" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s0"/><site site="hit_0"/></spatial><spatial name="beam1" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s1"/><site site="hit_1"/></spatial><spatial name="beam2" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s2"/><site site="hit_2"/></spatial><spatial name="beam3" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s3"/><site site="hit_3"/></spatial>
+        <spatial name="beam4" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s4"/><site site="hit_4"/></spatial><spatial name="beam5" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s5"/><site site="hit_5"/></spatial><spatial name="beam6" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s6"/><site site="hit_6"/></spatial><spatial name="beam7" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s7"/><site site="hit_7"/></spatial>
+        <spatial name="beam8" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s8"/><site site="hit_8"/></spatial><spatial name="beam9" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s9"/><site site="hit_9"/></spatial><spatial name="beam10" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s10"/><site site="hit_10"/></spatial><spatial name="beam11" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s11"/><site site="hit_11"/></spatial>
+        <spatial name="beam12" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s12"/><site site="hit_12"/></spatial><spatial name="beam13" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s13"/><site site="hit_13"/></spatial><spatial name="beam14" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s14"/><site site="hit_14"/></spatial><spatial name="beam15" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s15"/><site site="hit_15"/></spatial>
+        <spatial name="beam16" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s16"/><site site="hit_16"/></spatial><spatial name="beam17" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s17"/><site site="hit_17"/></spatial><spatial name="beam18" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s18"/><site site="hit_18"/></spatial><spatial name="beam19" rgba="0 1 0 0.8" width="0.003" group="1"><site site="s19"/><site site="hit_19"/></spatial>
+    </tendon>
+
+    <sensor>
+        <rangefinder name="ray0" site="s0"/><rangefinder name="ray1" site="s1"/><rangefinder name="ray2" site="s2"/>
+        <rangefinder name="ray3" site="s3"/><rangefinder name="ray4" site="s4"/><rangefinder name="ray5" site="s5"/>
+        <rangefinder name="ray6" site="s6"/><rangefinder name="ray7" site="s7"/><rangefinder name="ray8" site="s8"/>
+        <rangefinder name="ray9" site="s9"/><rangefinder name="ray10" site="s10"/><rangefinder name="ray11" site="s11"/>
+        <rangefinder name="ray12" site="s12"/><rangefinder name="ray13" site="s13"/><rangefinder name="ray14" site="s14"/>
+        <rangefinder name="ray15" site="s15"/><rangefinder name="ray16" site="s16"/><rangefinder name="ray17" site="s17"/>
+        <rangefinder name="ray18" site="s18"/><rangefinder name="ray19" site="s19"/>
+    </sensor>
+
+    <actuator>
+        <velocity name="v_fl" joint="dfl" ctrlrange="-10 10" kv="2" forcerange="-5 5"/>
+        <velocity name="v_rl" joint="drl" ctrlrange="-10 10" kv="2" forcerange="-5 5"/>
+        <velocity name="v_fr" joint="dfr" ctrlrange="-10 10" kv="2" forcerange="-5 5"/>
+        <velocity name="v_rr" joint="drr" ctrlrange="-10 10" kv="2" forcerange="-5 5"/>
+    </actuator>
+</mujoco>

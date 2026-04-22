@@ -1,0 +1,27 @@
+Fri Apr 17 13:03:49 2026
+WARNING: Nan, Inf or huge value in QVEL at DOF 27. The simulation is unstable. Time = 0.0800.
+
+Fri Apr 17 13:03:49 2026
+WARNING: Nan, Inf or huge value in QACC at DOF 24. The simulation is unstable. Time = 0.0900.
+
+Fri Apr 17 13:03:56 2026
+WARNING: Nan, Inf or huge value in QPOS at DOF 35. The simulation is unstable. Time = 0.0800.
+
+Fri Apr 17 13:03:59 2026
+WARNING: Nan, Inf or huge value in QACC at DOF 27. The simulation is unstable. Time = 0.0900.
+
+Fri Apr 17 13:04:08 2026
+WARNING: Nan, Inf or huge value in QPOS at DOF 35. The simulation is unstable. Time = 0.0900.
+
+Fri Apr 17 13:04:11 2026
+WARNING: Nan, Inf or huge value in QVEL at DOF 27. The simulation is unstable. Time = 0.0900.
+
+Fri Apr 17 13:04:12 2026
+WARNING: Nan, Inf or huge value in QACC at DOF 27. The simulation is unstable. Time = 0.0800.
+
+Fri Apr 17 13:04:14 2026
+WARNING: Nan, Inf or huge value in QVEL at DOF 27. The simulation is unstable. Time = 0.0900.
+
+Fri Apr 17 13:04:16 2026
+WARNING: Nan, Inf or huge value in QVEL at DOF 27. The simulation is unstable. Time = 0.0900.
+
