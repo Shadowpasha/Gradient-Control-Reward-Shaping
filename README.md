@@ -31,7 +31,7 @@ cd Gradient-Control-Reward-Shaping
 pip install gymnasium[mujoco] stable-baselines3 tensorboard
 ```
 
-## 🏋️ Training Pipelines
+## Training Pipelines
 
 The repository contains two main experiment suites:
 
